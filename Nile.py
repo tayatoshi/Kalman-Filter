@@ -40,8 +40,11 @@ class Calculation1:
             p = T*P_t[i]*T + h
             vero[i] = np.log(F) + (u ** 2)/F
         vero_fit = -0.5*sum(vero)
-        return([P_t, A_t, vero_fit, Z*A_t])
-    
+        return({'A_t':A_t, 'P_t':P_t, 'vero_fit':vero_fit, 'y_hat':Z*A_t})
+
+
+# In[ ]:
+
 class Calculation2:
     def __init__(self):
         pass
@@ -56,6 +59,9 @@ class Calculation2:
         result = Calculation1.kf(y,0.0,10.0**6,e,h,Z,T)
         return(result)
 
+
+# In[ ]:
+
 class KF_estimate(Calculation1,Calculation2):
     def __init__(self,data,init_e,init_h,init_z,init_t):
         self.data = data
@@ -66,7 +72,7 @@ class KF_estimate(Calculation1,Calculation2):
             for h in np.arange(init_h[0],init_h[1],init_h[2]):
                 for z in np.arange(init_z[0],init_z[1],init_z[2]):
                     for t in np.arange(init_t[0],init_t[1],init_t[2]):
-                        l=Calculation2.pars(np.array([data,e,h,z,t]))[2]
+                        l=Calculation2.pars(np.array([data,e,h,z,t]))['vero_fit']
                         re.append(l)
                         print('(',e,h,z,t,')',l)
                         if(L==None or l>L):
@@ -90,7 +96,7 @@ class KF_estimate(Calculation1,Calculation2):
     def forecast(self, n = 20):
         self.prediction
         forecast_a = np.zeros(n)
-        forecast_A = self.prediction[1][-1]
+        forecast_A = self.prediction['A_t'][-1]
         for i in range(n):
             forecast_a[i] = self.estimation['Z']*forecast_A
             forecast_A = forecast_a[i]
@@ -123,11 +129,22 @@ fore=kfe.forecast()
 # In[ ]:
 
 plt.plot(y,label='observation')
-plt.plot(pre[1],label='predict')
+plt.plot(pre['A_t'],label='predict')
 plt.plot(fore,label='forecast')
 plt.legend()
 plt.title('Flow of River Nile')
 plt.show()
+
+
+# In[ ]:
+
+plt.plot(pre['P_t'])
+plt.show()
+
+
+# In[ ]:
+
+np.dot(2,2)
 
 
 # In[ ]:
