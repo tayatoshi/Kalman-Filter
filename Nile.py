@@ -21,7 +21,7 @@ plt.show()
 class Calculation1:
     def __init__(self):
         pass
-    
+
     def kf(y_train, a0, p0, e, h, Z, T):
         length=len(y_train)
         a = a0
@@ -48,7 +48,7 @@ class Calculation1:
 class Calculation2:
     def __init__(self):
         pass
-    
+
     #pars(np.array([y,e,h,Z,T]))
     def pars(p):
         y = p[0]
@@ -84,15 +84,14 @@ class KF_estimate(Calculation1,Calculation2):
         print('\n')
         print('===========================================')
         print('log Likelihood = ', L)
-        #print('===========================================')
         print('-------------------------------------------')
         print('e = ', ep, 'h = ', eta, 'Z = ', Z, 'T = ', T)
         self.estimation={"L":L, "e":ep, "h":eta, "Z":Z, "T":T}
         self.prediction=Calculation2.pars(np.array([data,self.estimation['e'],self.estimation['h'],self.estimation['Z'],self.estimation['T']]))
-    
+
     def predict(self):
         return(self.prediction)
-    
+
     def forecast(self, n = 20):
         self.prediction
         forecast_a = np.zeros(n)
@@ -103,12 +102,17 @@ class KF_estimate(Calculation1,Calculation2):
         forecast_a = pd.DataFrame(forecast_a)
         forecast_a.index = forecast_a.index + self.length
         return(forecast_a)
-    
-    def smoothing(self):
-        smoothe=np.zeros(self.length)
-        for i in range(self.length):
-            smooth[i]=1
-        return()
+
+# 平滑化は諦めた。
+#    def smoothing(self):
+#        smoothe=np.zeros(self.length)
+#        for i in range(self.length):
+#            if(i==0):
+#                smooth_A[i]=self.predict['A_t'][-(i+1)]
+#                smooth_P[i]=self.predict['P_t'][-(i+1)]
+#            else:
+#                smooth_A[i:=self.predict['A_t'][-(i+1)]+self.predict['P_t'][-(i+1)]*T
+#        return()
 
 
 # In[ ]:
@@ -140,11 +144,6 @@ plt.show()
 
 plt.plot(pre['P_t'])
 plt.show()
-
-
-# In[ ]:
-
-np.dot(2,2)
 
 
 # In[ ]:
